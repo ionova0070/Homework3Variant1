@@ -8,25 +8,22 @@ namespace LeagueGram
 {
     public class Message
     {
-        User _user;
-        string _message;
-        DateTime _timeOfSending;
+    	internal Guid IdOfSender { get; private set; }
+    	internal Guid IdOfMessage { get; private set; }
+    	internal string TextOfMessage { get; set; }
+        private DateTime _timeOfSending;
 
-        public Message(User creatorOfMessage, string message)
+        internal Message(Guid idOfSender, string message, DateTime timeOfSending, Guid idOfMessage)
         {
-            _user = creatorOfMessage;
-            _message = message;
-            _timeOfSending = DateTime.Now;
+            IdOfSender = idOfSender;
+            IdOfMessage = idOfMessage;
+            TextOfMessage = message;
+            _timeOfSending = timeOfSending;
         }
 
-        public void EditMessage(string newText)
+        internal void EditMessage(string newText)
         {
-            _message = newText;
-        }
-
-        public Guid GetIDSender()
-        {
-            return _user.ID;
+            TextOfMessage = newText;
         }
     }
 }

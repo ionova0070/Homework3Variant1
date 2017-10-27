@@ -6,11 +6,35 @@ using System.Threading.Tasks;
 
 namespace LeagueGram
 {
-    public class Channel : OpenedChat
+    internal class Channel : OpenedChat, IMessageManager
     {
-    	public Channel(User creator) : base(creator)
+    	internal Channel(Guid idOfCreator) : base(idOfCreator)
         {
-           
         }
+    	
+		public void SendMessage(Guid idOfUser, string textOfMessage)
+		{
+			Guid IdOfMessage = Guid.NewGuid();
+			if (IsUserAdmin(idOfUser))
+			{
+				_messages.Add(IdOfMessage, new Message(idOfUser, textOfMessage, DateTime.Now, IdOfMessage));
+			}
+			else
+			{
+				throw new NotSupportedException("Вы не можете отправить сообщение на канал, не являясь администратором");
+			}
+		}
+    	
+		public void DeleteMessage(Guid idOfUser, Guid idOfMessage)
+		{
+			if (IsUserAdmin(idOfUser))
+			{
+				_messages.Remove(idOfMessage);
+			}
+			else
+			{
+				throw new NotSupportedException("Вы не можете удалить чужое сообщение, не являясь администратором");
+			}
+		}
     }
 }

@@ -3,68 +3,74 @@ using System.Collections.Generic;
 
 namespace LeagueGram
 {
-	public abstract class OpenedChat : Chat
+	internal abstract class OpenedChat : Chat
 	{
-		protected List<User> _admins;
-	    protected List<User> _users;
-	    protected User _creator;
+		protected List<Guid> _admins;
+	    protected List<Guid> _users;
+	    protected Guid  _idOfCreator;
 	    
-		public OpenedChat(User creator)
+		internal OpenedChat(Guid idOfCreator)
 		{
-			_admins = new List<User>();
-			_users = new List<User>();
-			_creator = creator;
-			_admins.Add(creator);
+			_admins = new List<Guid>();
+			_users = new List<Guid>();
+			_idOfCreator = idOfCreator;
+			_admins.Add(idOfCreator);
+			_messages = new Dictionary<Guid, Message>();
 		}
 		
-		public void AddUser(User user)
+		internal void AddUser(Guid idOfUser)
 		{
-			_users.Add(user);
+			_users.Add(idOfUser);
 		}
 		
-		public void ChangeRole(User source, User target)
+		internal void ChangeRole(Guid idOfSource, Guid idOfTarget)
 		{
-			bool IsUserFromThisChat = false;
-			bool IsTargetAdmin = false;
-			bool IsUserRole = false;
+			bool IsUserRole;
 			
-			foreach (User user in _users)
+			if (_users.Contains(idOfTarget))
 			{
-				if (source.ID == user.ID)
-				{
-					IsUserFromThisChat = IsUserFromThisChat || true;
-					IsUserRole = IsUserRole || true;
-				}
-				else
-				{
-					IsUserFromThisChat = IsUserFromThisChat || false;
-					IsUserRole = IsUserRole || false;
-				}
-			}
-			
-			foreach (User admin in _admins)
-			{
-				if (source.ID == admin.ID)
-				{
-					IsTargetAdmin = IsTargetAdmin || true;
-				}
-				else
-				{
-					IsTargetAdmin = IsTargetAdmin || false;
-				}
-			}
-			
-			if (IsTargetAdmin && IsUserFromThisChat && IsUserRole)
-			{
-				_admins.Add(target);
-			}
-			else if (IsTargetAdmin && IsUserFromThisChat && !IsUserRole)
-			{
-				_admins.Remove(target);
+				IsUserRole = true;
 			}
 			else
 			{
-				
+				IsUserRole = false;
+			}
+			
+			if (IsUserAdmin(idOfSource)&&IsUserFromThisChat(idOfTarget)&&IsUserRole)
+			{
+				_admins.Add(idOfTarget);
+			}
+			else if (IsUserAdmin(idOfSource) && IsUserFromThisChat(idOfTarget) && !IsUserRole)
+			{
+				_admins.Remove(idOfTarget);
+			}
+			else
+			{
+				throw new NotSupportedException();
+			}
+		}
+		
+		protected bool IsUserFromThisChat(Guid idOfPossibleUser)
+		{
+			if (_users.Contains(idOfPossibleUser))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		
+		protected bool IsUserAdmin(Guid idOfPossibleAdmin)
+		{
+			if (_admins.Contains(idOfPossibleAdmin))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
 			}
 		}
 	}

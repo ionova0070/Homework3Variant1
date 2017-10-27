@@ -6,16 +6,36 @@ using System.Threading.Tasks;
 
 namespace LeagueGram
 {
-    public abstract class Chat
+    public abstract class Chat 
     {
-        protected List<Message> _messages;
-
-        public void EditMessage(Message message, User user, string newString)
+        protected Dictionary<Guid, Message> _messages;
+        
+        public Chat()
         {
-            if (message.GetIDSender() == user.ID)
+        	_messages = new Dictionary<Guid, Message>();
+        }
+
+        internal void EditMessage(Guid idOfMessage, Guid idOfUser, string newText)
+        {
+        	Guid IdOfSender = _messages[idOfMessage].IdOfSender;
+            
+        	if (IdOfSender == idOfUser)
             {
-                message.EditMessage(newString);
+            	_messages[idOfMessage].EditMessage(newText);
+            	_messages = new Dictionary<Guid, Message>();
             }
+        }
+        
+        internal bool IsHistoryEmpty()
+        {
+        	if (_messages.Count == 0)
+        	{
+        		return true;
+        	}
+        	else
+        	{
+        		return false;
+        	}
         }
     }
 }

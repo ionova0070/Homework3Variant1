@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace LeagueGram
 {
-    public struct User
+    public class User
     {
-        public string NickName { get; private set; }
-        public Guid ID { get; private set; }
-        public User(string nickName)
+        internal string NickName { get; private set; }
+        internal Guid ID { get; private set; }
+        
+        internal User(string nickName, Guid id)
         {
             NickName = nickName;
-            ID = Guid.NewGuid();
+            ID = id;
         }
     }
 }

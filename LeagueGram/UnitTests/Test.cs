@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace LeagueGram
 {
 	[TestFixture]
-	public class Test1
+	public class Test
 	{
 		[Test]
 		public void SendMessageToPrivateChatReturnTrue()
@@ -99,31 +99,6 @@ namespace LeagueGram
 			Channel TestingChat = new Channel(IdOfCreator);
 			
 			TestingChat.SendMessage(Guid.NewGuid(), "Test");
-		}
-		
-		[Test]
-		public void EditMessageInPrivateChatByCreatorOfMessage()
-		{
-			bool Expected = true;
-			Guid IdOfCreator = Guid.NewGuid();
-			Guid IdOfCompanion = Guid.NewGuid();
-			Dictionary<Guid, Message> History = new Dictionary<Guid, Message>();
-			PrivateChat TestingChat = new PrivateChat(IdOfCreator, IdOfCompanion);
-			
-			bool Actual;
-			TestingChat.SendMessage(IdOfCreator, "Test");
-			TestingChat.EditMessage(IdOfCreator, TestingChat.IdOfLastMessage, "Test2");
-			History = TestingChat.ShowHistory();
-			if (String.Equals("Test2", History[TestingChat.IdOfLastMessage].TextOfMessage))
-			{
-				Actual = false;
-			}
-			else
-			{
-				Actual = true;
-			}
-			
-			Assert.AreEqual(Expected, Actual);
 		}
 	}
 }
